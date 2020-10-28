@@ -1,12 +1,14 @@
-import React, {useState} from 'react';
-import {RouteProp, useTheme} from '@react-navigation/native';
+import React, {useEffect, useRef, useState} from 'react';
+import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {Button, Subheading, Surface} from 'react-native-paper';
+import {Subheading, Surface, Text} from 'react-native-paper';
 import {RootStackParamList} from '../App';
 import Tone from 'react-native-tone2';
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
-import SequenceManager from './SequenceManager';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import SequenceManager from './core/SequenceManager';
 import ControlButtons from './ControlButtons';
+import SingleSampleInstrument from './core/SingleSampleInstrument';
+import SingleSampleInstrumentComponent from './SingleSampleInstrumentComponent';
 
 type SequencerScreenRouteProp = RouteProp<RootStackParamList, 'Sequencer'>;
 type SequencerScreenNavigationProp = StackNavigationProp<
@@ -18,145 +20,75 @@ type NavigationProps = {
   navigation: SequencerScreenNavigationProp;
 };
 
-const tileSize = 36;
 const Sequencer = ({navigation}: NavigationProps) => {
-  const [sequenceManager] = useState(new SequenceManager());
+  const [sequenceManager] = useState(() => {
+    const sm = new SequenceManager();
+    sm.addSingleSampleInstrument(
+      new SingleSampleInstrument(
+        require('../assets/icons/001-bass-drum.png'),
+        'kick.wav',
+      ),
+    );
+    sm.addSingleSampleInstrument(
+      new SingleSampleInstrument(
+        require('../assets/icons/002-drum.png'),
+        'snare.wav',
+      ),
+    );
+    sm.addSingleSampleInstrument(
+      new SingleSampleInstrument(
+        require('../assets/icons/003-hi-hat.png'),
+        'hihat.wav',
+      ),
+    );
+    sm.addSingleSampleInstrument(
+      new SingleSampleInstrument(
+        require('../assets/icons/003-hi-hat.png'),
+        'openhat.wav',
+      ),
+    );
+    sm.addSingleSampleInstrument(
+      new SingleSampleInstrument(
+        require('../assets/icons/004-clapping.png'),
+        'clap.wav',
+      ),
+    );
+    sm.onCounterChange.sub((sm, c) => {
+      setCurrentBeat(c);
+    });
+    return sm;
+  });
+
   const [isPlaying, setIsPlaying] = useState(sequenceManager.isPlaying());
+  const [currentBeat, setCurrentBeat] = useState(-1);
   function onStop() {
     sequenceManager.stop();
+    setIsPlaying(sequenceManager.isPlaying());
   }
   function onPlay() {
     if (sequenceManager.isPlaying()) {
       sequenceManager.pause();
-      setIsPlaying(false);
     } else {
       sequenceManager.play();
-      setIsPlaying(true);
     }
+    setIsPlaying(sequenceManager.isPlaying());
   }
 
-  const {colors} = useTheme();
   return (
     /** TODO: Playback progress on top, not scrollable */
-
-    /** TODO: Make unified interface to define each instrument sequence, icon, sample, etc */
-
-    /** TODO: Refactor this below, extract components for each card, each instrument */
     <View style={styles.containerView}>
       <ScrollView horizontal style={styles.horizontalContainer}>
         <ScrollView style={styles.verticalContainer}>
-          <Subheading>Drums</Subheading>
+          <Subheading style={styles.subheader}>Drums</Subheading>
           <Surface style={styles.surface}>
-            <View style={styles.instrumentRowView}>
-              <Image
-                style={styles.instrumentIcon}
-                source={require('../assets/icons/001-bass-drum.png')}
+            {sequenceManager.instruments.map((instrument, i) => (
+              <SingleSampleInstrumentComponent
+                instrument={instrument}
+                beatsPerBar={sequenceManager.getBeatsPerBar()}
+                currentBeat={currentBeat}
+                key={i}
               />
-              {new Array(16).fill(0).map((_e: number, i: number) => (
-                <Button
-                  mode="contained"
-                  key={i}
-                  style={{
-                    width: 0,
-                    minWidth: tileSize,
-                    height: tileSize,
-                    marginLeft: i % 4 != 0 ? 4 : 16,
-                    backgroundColor: colors.border,
-                    overflow: 'hidden',
-                  }}
-                  onPress={() => {}}>
-                  &nbsp;
-                </Button>
-              ))}
-            </View>
-            <View style={styles.instrumentRowView}>
-              <Image
-                style={styles.instrumentIcon}
-                source={require('../assets/icons/002-drum.png')}
-              />
-              {new Array(16).fill(0).map((_e: number, i: number) => (
-                <Button
-                  mode="contained"
-                  key={i}
-                  style={{
-                    width: 0,
-                    minWidth: tileSize,
-                    height: tileSize,
-                    marginLeft: i % 4 != 0 ? 4 : 16,
-                    backgroundColor: colors.border,
-                    overflow: 'hidden',
-                  }}
-                  onPress={() => {}}>
-                  &nbsp;
-                </Button>
-              ))}
-            </View>
-            <View style={styles.instrumentRowView}>
-              <Image
-                style={styles.instrumentIcon}
-                source={require('../assets/icons/003-hi-hat.png')}
-              />
-              {new Array(16).fill(0).map((_e: number, i: number) => (
-                <Button
-                  mode="contained"
-                  key={i}
-                  style={{
-                    width: 0,
-                    minWidth: tileSize,
-                    height: tileSize,
-                    marginLeft: i % 4 != 0 ? 4 : 16,
-                    backgroundColor: colors.border,
-                    overflow: 'hidden',
-                  }}
-                  onPress={() => {}}>
-                  &nbsp;
-                </Button>
-              ))}
-            </View>
-            <View style={styles.instrumentRowView}>
-              <Image
-                style={styles.instrumentIcon}
-                source={require('../assets/icons/004-clapping.png')}
-              />
-              {new Array(16).fill(0).map((_e: number, i: number) => (
-                <Button
-                  mode="contained"
-                  key={i}
-                  style={{
-                    width: 0,
-                    minWidth: tileSize,
-                    height: tileSize,
-                    marginLeft: i % 4 != 0 ? 4 : 16,
-                    backgroundColor: colors.border,
-                    overflow: 'hidden',
-                  }}
-                  onPress={() => {}}>
-                  &nbsp;
-                </Button>
-              ))}
-            </View>
-            <View style={styles.instrumentRowView}>
-              <Image
-                style={styles.instrumentIcon}
-                source={require('../assets/icons/005-maracas.png')}
-              />
-              {new Array(16).fill(0).map((_e: number, i: number) => (
-                <Button
-                  mode="contained"
-                  key={i}
-                  style={{
-                    width: 0,
-                    minWidth: tileSize,
-                    height: tileSize,
-                    marginLeft: i % 4 != 0 ? 4 : 16,
-                    backgroundColor: colors.border,
-                    overflow: 'hidden',
-                  }}
-                  onPress={() => {}}>
-                  &nbsp;
-                </Button>
-              ))}
-            </View>
+            ))}
           </Surface>
         </ScrollView>
       </ScrollView>
@@ -173,14 +105,11 @@ const styles = StyleSheet.create({
   containerView: {
     flex: 1,
   },
-  scrollView: {
-    backgroundColor: 'pink',
-    marginHorizontal: 20,
-  },
   verticalContainer: {
     flex: 1,
     padding: 16,
     flexDirection: 'column',
+    margin: -4,
   },
   horizontalContainer: {
     flex: 1,
@@ -192,17 +121,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     elevation: 4,
   },
-  instrumentRowView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 724,
-    height: tileSize,
-    maxHeight: tileSize,
-    margin: 8,
-  },
-  instrumentIcon: {
-    width: tileSize,
-    height: tileSize,
+  subheader: {
+    marginLeft: 4,
   },
 });
 export default Sequencer;
