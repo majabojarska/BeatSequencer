@@ -14,7 +14,11 @@ const App = () => {
     <PaperProvider>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Sequencer" component={Sequencer} />
+          <Stack.Screen
+            name="Sequencer"
+            component={Sequencer}
+            options={{title: 'Beat Sequencer'}}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

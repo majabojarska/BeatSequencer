@@ -2,34 +2,20 @@ import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {Button, useTheme} from 'react-native-paper';
 import {color} from 'react-native-reanimated';
+import BeatButton from './BeatButton';
+import SequenceManager from './core/SequenceManager';
 import SingleSampleInstrument from './core/SingleSampleInstrument';
 
 interface Props {
   instrument: SingleSampleInstrument;
-  beatsPerBar: number;
-  currentBeat: number;
+  sequenceManager: SequenceManager;
 }
 const tileSize = 36;
 const SingleSampleInstrumentComponent = ({
   instrument,
-  beatsPerBar,
-  currentBeat,
+  sequenceManager,
 }: Props) => {
-  const {colors} = useTheme();
   const [seq, setSeq] = useState([...instrument.getSequence()]);
-
-  function getButtonStyle(beat: boolean, i: number) {
-    return {
-      backgroundColor: beat
-        ? currentBeat === i
-          ? colors.primary
-          : colors.accent
-        : currentBeat === i
-        ? colors.backdrop
-        : colors.background,
-      marginLeft: i % beatsPerBar !== 0 ? 4 : 16,
-    };
-  }
 
   function setBeat(nth: number, beat: boolean) {
     instrument.setBeat(nth, beat);
@@ -39,17 +25,13 @@ const SingleSampleInstrumentComponent = ({
   return (
     <View style={styles.instrumentRowView}>
       <Image style={styles.instrumentIcon} source={instrument.iconResource} />
-      {seq.map((beat: boolean, i: number) => (
-        <Button
-          mode="contained"
+      {seq.map((_b: boolean, i: number) => (
+        <BeatButton
           key={i}
-          style={{
-            ...styles.button,
-            ...getButtonStyle(beat, i),
-          }}
-          onPress={() => setBeat(i, !beat)}>
-          &nbsp;
-        </Button>
+          k={i}
+          sequenceManager={sequenceManager}
+          instrument={instrument}
+        />
       ))}
     </View>
   );

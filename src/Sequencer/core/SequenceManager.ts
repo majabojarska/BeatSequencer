@@ -3,7 +3,7 @@ import SingleSampleInstrument from './SingleSampleInstrument';
 import {EventDispatcher} from 'strongly-typed-events';
 
 export default class SequenceManager {
-  private bpm = 180;
+  private bpm = 60;
   private playInterval: NodeJS.Timeout | null = null;
   public readonly instruments: SingleSampleInstrument[] = [];
 
@@ -20,11 +20,11 @@ export default class SequenceManager {
     Sound.setCategory('Playback');
   }
 
-  get currentBeat() {
+  public get currentBeat() {
     return this.sequenceCounter;
   }
 
-  private get sequenceLength() {
+  public get sequenceLength() {
     return this.bars * this.beatsPerBar;
   }
 
@@ -65,6 +65,7 @@ export default class SequenceManager {
   public addSingleSampleInstrument(instrument: SingleSampleInstrument) {
     instrument.setSequenceLength(this.bars, this.beatsPerBar);
     this.instruments.push(instrument);
+    return this;
   }
 
   public setSequenceLength(bars: number, beatsPerBar: number) {
@@ -75,10 +76,9 @@ export default class SequenceManager {
 
   private restartInterval() {
     this.clearInterval();
-    this.playInterval = setInterval(
-      this.tick.bind(this),
-      (60 * 1000) / this.bpm,
-    );
+    const period = 60 / this.beatsPerBar / this.bpm;
+    console.log(period);
+    this.playInterval = setInterval(this.tick.bind(this), period * 1000);
   }
 
   private clearInterval() {
@@ -89,13 +89,12 @@ export default class SequenceManager {
   }
 
   private tick() {
-    console.log('tick');
     const p1 = performance.now();
     this.sequenceCounter = (this.sequenceCounter + 1) % this.sequenceLength;
     this.instruments.forEach((ins) => {
       ins.tick(this.sequenceCounter);
     });
     this._onCounterChange.dispatch(this, this.sequenceCounter);
-    console.log(performance.now() - p1);
+    console.log('Perf', performance.now() - p1);
   }
 }

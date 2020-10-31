@@ -1,14 +1,14 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {Subheading, Surface, Text} from 'react-native-paper';
+import {ProgressBar, Subheading, Surface, Text} from 'react-native-paper';
 import {RootStackParamList} from '../App';
 import Tone from 'react-native-tone2';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import SequenceManager from './core/SequenceManager';
-import ControlButtons from './ControlButtons';
-import SingleSampleInstrument from './core/SingleSampleInstrument';
+import BottomControls from './BottomControls';
 import SingleSampleInstrumentComponent from './SingleSampleInstrumentComponent';
+import SequenceManagerFactory from './core/SequenceManagerFactory';
+import Progress from './Progress';
 
 type SequencerScreenRouteProp = RouteProp<RootStackParamList, 'Sequencer'>;
 type SequencerScreenNavigationProp = StackNavigationProp<
@@ -22,50 +22,18 @@ type NavigationProps = {
 
 const Sequencer = ({navigation}: NavigationProps) => {
   const [sequenceManager] = useState(() => {
-    const sm = new SequenceManager();
-    sm.addSingleSampleInstrument(
-      new SingleSampleInstrument(
-        require('../assets/icons/001-bass-drum.png'),
-        'kick.wav',
-      ),
-    );
-    sm.addSingleSampleInstrument(
-      new SingleSampleInstrument(
-        require('../assets/icons/002-drum.png'),
-        'snare.wav',
-      ),
-    );
-    sm.addSingleSampleInstrument(
-      new SingleSampleInstrument(
-        require('../assets/icons/003-hi-hat.png'),
-        'hihat.wav',
-      ),
-    );
-    sm.addSingleSampleInstrument(
-      new SingleSampleInstrument(
-        require('../assets/icons/003-hi-hat.png'),
-        'openhat.wav',
-      ),
-    );
-    sm.addSingleSampleInstrument(
-      new SingleSampleInstrument(
-        require('../assets/icons/004-clapping.png'),
-        'clap.wav',
-      ),
-    );
-    sm.onCounterChange.sub((sm, c) => {
-      setCurrentBeat(c);
-    });
+    const sm = SequenceManagerFactory.getDrumSet();
     return sm;
   });
 
   const [isPlaying, setIsPlaying] = useState(sequenceManager.isPlaying());
-  const [currentBeat, setCurrentBeat] = useState(-1);
   function onStop() {
     sequenceManager.stop();
     setIsPlaying(sequenceManager.isPlaying());
   }
   function onPlay() {
+    console.log('click');
+
     if (sequenceManager.isPlaying()) {
       sequenceManager.pause();
     } else {
@@ -77,6 +45,8 @@ const Sequencer = ({navigation}: NavigationProps) => {
   return (
     /** TODO: Playback progress on top, not scrollable */
     <View style={styles.containerView}>
+      <Progress sequenceManager={sequenceManager} />
+
       <ScrollView horizontal style={styles.horizontalContainer}>
         <ScrollView style={styles.verticalContainer}>
           <Subheading style={styles.subheader}>Drums</Subheading>
@@ -84,18 +54,19 @@ const Sequencer = ({navigation}: NavigationProps) => {
             {sequenceManager.instruments.map((instrument, i) => (
               <SingleSampleInstrumentComponent
                 instrument={instrument}
-                beatsPerBar={sequenceManager.getBeatsPerBar()}
-                currentBeat={currentBeat}
+                sequenceManager={sequenceManager}
                 key={i}
               />
             ))}
           </Surface>
         </ScrollView>
       </ScrollView>
-      <ControlButtons
+      <BottomControls
         isPlaying={isPlaying}
         onPlayPress={() => onPlay()}
         onStopPress={() => onStop()}
+        bpm={sequenceManager.getBPM()}
+        onBpmChange={(bpm) => sequenceManager.setBPM(bpm)}
       />
     </View>
   );
@@ -110,6 +81,7 @@ const styles = StyleSheet.create({
     padding: 16,
     flexDirection: 'column',
     margin: -4,
+    paddingBottom: 80,
   },
   horizontalContainer: {
     flex: 1,
