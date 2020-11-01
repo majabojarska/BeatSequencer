@@ -21,10 +21,14 @@ export type NavigationProps = {
 };
 
 const Sequencer = ({navigation, route}: NavigationProps) => {
-  const [sequenceManager] = useState(() => {
+  const [sequenceManager, setSequenceManager] = useState(() => {
     const sm = SequenceManagerFactory.getDrumSet();
     return sm;
   });
+
+  const [instruments, setInstruments] = useState([
+    ...sequenceManager.instruments,
+  ]);
 
   const [isPlaying, setIsPlaying] = useState(sequenceManager.isPlaying());
 
@@ -55,6 +59,7 @@ const Sequencer = ({navigation, route}: NavigationProps) => {
         navigation={navigation}
         route={route}
         sequenceManager={sequenceManager}
+        onUpdate={() => setInstruments([...sequenceManager.instruments])}
       />
 
       <Progress sequenceManager={sequenceManager} />
@@ -63,7 +68,7 @@ const Sequencer = ({navigation, route}: NavigationProps) => {
         <ScrollView style={styles.verticalContainer}>
           <Subheading style={styles.subheader}>Drums</Subheading>
           <Surface style={styles.surface}>
-            {sequenceManager.instruments.map((instrument, i) => (
+            {instruments.map((instrument, i) => (
               <SingleSampleInstrumentComponent
                 instrument={instrument}
                 sequenceManager={sequenceManager}

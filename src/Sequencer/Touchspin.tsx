@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button, IconButton, TextInput} from 'react-native-paper';
+import {IconButton, TextInput} from 'react-native-paper';
 import _ from 'lodash';
 interface Props {
   label: string;
@@ -12,6 +12,11 @@ interface Props {
 }
 
 const Touchspin = ({label, min, max, step, value, onUpdate}: Props) => {
+  const [innerVal, setInnerVal] = useState('');
+  useEffect(() => {
+    setInnerVal(value.toString());
+  }, [value]);
+
   return (
     <View style={styles.view}>
       <IconButton
@@ -21,9 +26,11 @@ const Touchspin = ({label, min, max, step, value, onUpdate}: Props) => {
       <TextInput
         style={styles.input}
         label={label}
-        value={value.toString()}
+        value={innerVal}
         mode="outlined"
         dense
+        keyboardType="number-pad"
+        onChangeText={(t) => setInnerVal(t)}
         onEndEditing={(v) =>
           onUpdate(_.clamp(parseInt(v.nativeEvent.text, 10), min, max))
         }

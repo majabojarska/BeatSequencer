@@ -14,7 +14,14 @@ const SingleSampleInstrumentComponent = ({
   sequenceManager,
 }: Props) => {
   return (
-    <View style={styles.instrumentRowView}>
+    <View
+      style={{
+        ...styles.instrumentRowView,
+        width:
+          tileSize +
+          sequenceManager.sequenceLength * (tileSize + 4) +
+          sequenceManager.bars * 12,
+      }}>
       <Image style={styles.instrumentIcon} source={instrument.iconResource} />
       {Array(sequenceManager.sequenceLength)
         .fill(0)
@@ -34,7 +41,6 @@ const styles = StyleSheet.create({
   instrumentRowView: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: 724,
     height: tileSize,
     maxHeight: tileSize,
     margin: 8,

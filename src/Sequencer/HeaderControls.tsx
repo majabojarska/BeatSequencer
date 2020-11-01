@@ -1,4 +1,3 @@
-import {sortedUniq} from 'lodash';
 import React, {useCallback, useLayoutEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Dialog, IconButton, Portal, Button} from 'react-native-paper';
@@ -8,20 +7,31 @@ import Touchspin from './Touchspin';
 
 interface Props {
   sequenceManager: SequenceManager;
+  onUpdate: () => void;
 }
 
 const HeaderControls = ({
   navigation,
   sequenceManager,
+  onUpdate,
 }: Props & NavigationProps) => {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [bars, setBars] = useState(sequenceManager.bars);
   const [beatsPerBar, setBeatsPerBar] = useState(sequenceManager.beatsPerBar);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <View style={styles.view}>
-          <IconButton icon="music" size={20} onPress={() => setVisible(true)} />
+          <IconButton icon="music" size={24} onPress={() => setVisible(true)} />
+        </View>
+      ),
+      headerLeft: () => (
+        <View style={styles.view}>
+          <IconButton
+            icon="arrow-left"
+            size={24}
+            onPress={() => setVisible(true)}
+          />
         </View>
       ),
     });
@@ -30,11 +40,15 @@ const HeaderControls = ({
   const submit = useCallback(() => {
     sequenceManager.setSequenceLength(bars, beatsPerBar);
     setVisible(false);
-  }, [bars, beatsPerBar, sequenceManager]);
+    onUpdate();
+  }, [bars, beatsPerBar, sequenceManager, onUpdate]);
 
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={() => setVisible(false)}>
+      <Dialog
+        style={styles.dialog}
+        visible={visible}
+        onDismiss={() => setVisible(false)}>
         <Dialog.Title>Sequence settings</Dialog.Title>
         <Dialog.Content>
           <Touchspin
@@ -69,6 +83,10 @@ const styles = StyleSheet.create({
   },
   touchspin: {
     flexDirection: 'row',
+  },
+  dialog: {
+    minWidth: 300,
+    alignSelf: 'center',
   },
 });
 export default HeaderControls;
