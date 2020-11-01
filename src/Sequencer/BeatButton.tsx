@@ -33,7 +33,7 @@ const BeatButton = ({sequenceManager, instrument, k}: Props) => {
   }, [instrument, k, beat]);
 
   function getButtonStyle() {
-    const bpb = sequenceManager.getBeatsPerBar();
+    const bpb = sequenceManager.beatsPerBar;
     return {
       backgroundColor: beat
         ? isActive

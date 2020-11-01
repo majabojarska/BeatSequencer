@@ -1,17 +1,21 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {Provider as PaperProvider} from 'react-native-paper';
+import {Provider} from 'react-native-paper';
 import Sequencer from './Sequencer/Sequencer';
+import SequenceManager from './Sequencer/core/SequenceManager';
 const Stack = createStackNavigator();
 
 export type RootStackParamList = {
-  Sequencer: {};
+  Sequencer: {
+    sequenceManager: SequenceManager;
+  };
+  Piano: {};
 };
 
 const App = () => {
   return (
-    <PaperProvider>
+    <Provider>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
@@ -19,9 +23,14 @@ const App = () => {
             component={Sequencer}
             options={{title: 'Beat Sequencer'}}
           />
+          {/*  <Stack.Screen
+            name="Piano"
+            component={Piano}
+            options={{title: 'Piano'}}
+          /> */}
         </Stack.Navigator>
       </NavigationContainer>
-    </PaperProvider>
+    </Provider>
   );
 };
 

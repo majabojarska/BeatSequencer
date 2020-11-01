@@ -1,50 +1,62 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {ProgressBar, Subheading, Surface, Text} from 'react-native-paper';
+import {Subheading, Surface} from 'react-native-paper';
 import {RootStackParamList} from '../App';
-import Tone from 'react-native-tone2';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import BottomControls from './BottomControls';
 import SingleSampleInstrumentComponent from './SingleSampleInstrumentComponent';
-import SequenceManagerFactory from './core/SequenceManagerFactory';
 import Progress from './Progress';
+import SequenceManagerFactory from './core/SequenceManagerFactory';
+import HeaderControls from './HeaderControls';
 
 type SequencerScreenRouteProp = RouteProp<RootStackParamList, 'Sequencer'>;
 type SequencerScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'Sequencer'
 >;
-type NavigationProps = {
+export type NavigationProps = {
   route: SequencerScreenRouteProp;
   navigation: SequencerScreenNavigationProp;
 };
 
-const Sequencer = ({navigation}: NavigationProps) => {
+const Sequencer = ({navigation, route}: NavigationProps) => {
   const [sequenceManager] = useState(() => {
     const sm = SequenceManagerFactory.getDrumSet();
     return sm;
   });
 
   const [isPlaying, setIsPlaying] = useState(sequenceManager.isPlaying());
-  function onStop() {
+
+  const onStop = useCallback(() => {
     sequenceManager.stop();
     setIsPlaying(sequenceManager.isPlaying());
-  }
-  function onPlay() {
-    console.log('click');
+  }, [sequenceManager]);
 
+  const onPlay = useCallback(() => {
     if (sequenceManager.isPlaying()) {
       sequenceManager.pause();
     } else {
       sequenceManager.play();
     }
     setIsPlaying(sequenceManager.isPlaying());
-  }
+  }, [sequenceManager]);
+
+  const onBpmChange = useCallback(
+    (bpm: number) => {
+      sequenceManager.setBPM(bpm);
+    },
+    [sequenceManager],
+  );
 
   return (
-    /** TODO: Playback progress on top, not scrollable */
     <View style={styles.containerView}>
+      <HeaderControls
+        navigation={navigation}
+        route={route}
+        sequenceManager={sequenceManager}
+      />
+
       <Progress sequenceManager={sequenceManager} />
 
       <ScrollView horizontal style={styles.horizontalContainer}>
@@ -66,7 +78,7 @@ const Sequencer = ({navigation}: NavigationProps) => {
         onPlayPress={() => onPlay()}
         onStopPress={() => onStop()}
         bpm={sequenceManager.getBPM()}
-        onBpmChange={(bpm) => sequenceManager.setBPM(bpm)}
+        onBpmChange={(bpm) => onBpmChange(bpm)}
       />
     </View>
   );
@@ -81,7 +93,6 @@ const styles = StyleSheet.create({
     padding: 16,
     flexDirection: 'column',
     margin: -4,
-    paddingBottom: 80,
   },
   horizontalContainer: {
     flex: 1,
@@ -92,6 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 4,
+    marginBottom: 112,
   },
   subheader: {
     marginLeft: 4,

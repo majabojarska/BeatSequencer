@@ -35,7 +35,7 @@ const BottomControls = ({
     if (!numpadOpened.current) {
       onBpmChange(innerBpm);
     }
-  }, [innerBpm, onBpmChange]);
+  }, [innerBpm]);
 
   useEffect(() => {
     const parsed = parseInt(innerBpmText, 10);

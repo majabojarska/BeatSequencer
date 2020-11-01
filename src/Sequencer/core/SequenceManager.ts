@@ -7,8 +7,8 @@ export default class SequenceManager {
   private playInterval: NodeJS.Timeout | null = null;
   public readonly instruments: SingleSampleInstrument[] = [];
 
-  private bars = 4;
-  private beatsPerBar = 4;
+  private _bars = 4;
+  private _beatsPerBar = 4;
   private sequenceCounter = -1;
 
   private _onCounterChange = new EventDispatcher<SequenceManager, number>();
@@ -25,15 +25,19 @@ export default class SequenceManager {
   }
 
   public get sequenceLength() {
-    return this.bars * this.beatsPerBar;
+    return this._bars * this._beatsPerBar;
+  }
+
+  public get bars() {
+    return this._bars;
+  }
+
+  public get beatsPerBar() {
+    return this._beatsPerBar;
   }
 
   public isPlaying() {
     return !!this.playInterval;
-  }
-
-  public getBeatsPerBar() {
-    return this.beatsPerBar;
   }
 
   public getBPM() {
@@ -63,20 +67,20 @@ export default class SequenceManager {
   }
 
   public addSingleSampleInstrument(instrument: SingleSampleInstrument) {
-    instrument.setSequenceLength(this.bars, this.beatsPerBar);
+    instrument.setSequenceLength(this._bars, this._beatsPerBar);
     this.instruments.push(instrument);
     return this;
   }
 
   public setSequenceLength(bars: number, beatsPerBar: number) {
-    this.bars = bars;
-    this.beatsPerBar = beatsPerBar;
+    this._bars = bars;
+    this._beatsPerBar = beatsPerBar;
     this.instruments.forEach((ins) => ins.setSequenceLength(bars, beatsPerBar));
   }
 
   private restartInterval() {
     this.clearInterval();
-    const period = 60 / this.beatsPerBar / this.bpm;
+    const period = 60 / this._beatsPerBar / this.bpm;
     console.log(period);
     this.playInterval = setInterval(this.tick.bind(this), period * 1000);
   }
