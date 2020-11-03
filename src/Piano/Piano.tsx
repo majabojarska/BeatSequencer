@@ -1,15 +1,17 @@
 import React, {useCallback, useState} from 'react';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {Subheading, Surface} from 'react-native-paper';
+import {Subheading, Surface, Text} from 'react-native-paper';
 import {RootStackParamList} from '../App';
 // import Tone from 'react-native-tone2';
 import {ScrollView, StyleSheet, View} from 'react-native';
 // import BottomControls from './BottomControls';
 // import SingleSampleInstrumentComponent from './SingleSampleInstrumentComponent';
 // import Progress from './Progress';
-import PianoManager from "./core/PianoManager";
-import MultiSampleInstrumentComponent from "./MultiSampleInstrumentComponent";
+import PianoManager from './core/PianoManager';
+import MultiSampleInstrumentComponent from './MultiSampleInstrumentComponent';
+import SequenceManager from '../Sequencer/core/SequenceManager';
+import Progress from '../Sequencer/Progress';
 
 type PianoScreenRouteProp = RouteProp<RootStackParamList, 'Piano'>;
 type PianoScreenNavigationProp = StackNavigationProp<
@@ -22,16 +24,16 @@ type NavigationProps = {
 };
 
 const Piano = ({navigation, route}: NavigationProps) => {
-  const pianoManager: PianoManager = route.params.pianoManager;
-  
+  const sequenceManager: SequenceManager = (Piano as any).SequenceManager;
   return (
     <View style={styles.containerView}>
+      <Progress sequenceManager={sequenceManager} />
       {/* <Progress sequenceManager={sequenceManager} /> */}
 
-      <ScrollView horizontal style={styles.horizontalContainer}>
+      {/*   <ScrollView horizontal style={styles.horizontalContainer}>
         <Subheading style={styles.subheader}>Piano</Subheading>
         <Surface style={styles.surface}>
-          {pianoManager..map((instrument, i) => (
+          {pianoManager.map((instrument, i) => (
             <MultiSampleInstrumentComponent
               instrument={instrument}
               sequenceManager={pianoManager}
@@ -39,7 +41,8 @@ const Piano = ({navigation, route}: NavigationProps) => {
             />
           ))}
         </Surface>
-      </ScrollView>
+      </ScrollView> */}
+      <Text>Test</Text>
     </View>
   );
 };

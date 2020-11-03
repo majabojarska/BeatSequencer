@@ -7,8 +7,8 @@ import {ScrollView, StyleSheet, View} from 'react-native';
 import BottomControls from './BottomControls';
 import SingleSampleInstrumentComponent from './SingleSampleInstrumentComponent';
 import Progress from './Progress';
-import SequenceManagerFactory from './core/SequenceManagerFactory';
 import HeaderControls from './HeaderControls';
+import SequenceManager from './core/SequenceManager';
 
 type SequencerScreenRouteProp = RouteProp<RootStackParamList, 'Sequencer'>;
 type SequencerScreenNavigationProp = StackNavigationProp<
@@ -21,10 +21,7 @@ export type NavigationProps = {
 };
 
 const Sequencer = ({navigation, route}: NavigationProps) => {
-  const [sequenceManager, setSequenceManager] = useState(() => {
-    const sm = SequenceManagerFactory.getDrumSet();
-    return sm;
-  });
+  const sequenceManager: SequenceManager = (Sequencer as any).SequenceManager;
 
   const [instruments, setInstruments] = useState([
     ...sequenceManager.instruments,

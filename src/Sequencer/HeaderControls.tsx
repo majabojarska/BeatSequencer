@@ -30,7 +30,7 @@ const HeaderControls = ({
           <IconButton
             icon="arrow-left"
             size={24}
-            onPress={() => setVisible(true)}
+            onPress={() => navigation.goBack()}
           />
         </View>
       ),
