@@ -1,10 +1,8 @@
 import PianoManager from './PianoManager';
-import MultiSampleInstrument from './MultiSampleInstrument';
 import SoundPack from './SoundPack';
+import PianoInstrument from './PianoInstrument';
 
 export default class PianoManagerFactory {
-  private static soundPacks: Map<string, SoundPack> = new Map();
-
   public static getBase(): PianoManager {
     return new PianoManager();
   }
@@ -14,7 +12,7 @@ export default class PianoManagerFactory {
 
     pianoManager.addInstrument(
       'Piano',
-      new MultiSampleInstrument(new SoundPack('piano', 1, 88)),
+      new PianoInstrument(new SoundPack('piano', 1, 88)),
     );
 
     pianoManager.setActiveInstrument(
