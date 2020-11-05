@@ -1,21 +1,25 @@
 import MultiSampleInstrument from './MultiSampleInstrument';
-import DummyPianoInstrument from './DummyPianoInstrument';
+import NullPianoInstrument from './NullPianoInstrument';
+import PianoInstrument from './PianoInstrument';
 
 export default class PianoManager {
-  private activeInstrument?: MultiSampleInstrument = new DummyPianoInstrument();
-  private availableInstruments: Map<string, MultiSampleInstrument> = new Map();
+  private activeInstrument: MultiSampleInstrument = new NullPianoInstrument();
+  private availableInstruments: Map<string, PianoInstrument> = new Map();
 
-  public addInstrument(name: string, instrument: MultiSampleInstrument) {
+  public addInstrument(name: string, instrument: PianoInstrument) {
     this.availableInstruments.set(name, instrument);
     return this;
   }
 
   public setActiveInstrument(name: string) {
-    this.activeInstrument = this.availableInstruments.get(name);
+    const newActiveInstrument = this.availableInstruments.get(name);
+    if (newActiveInstrument) {
+      this.activeInstrument = newActiveInstrument;
+    }
     return this;
   }
 
-  public getActiveInstrument() {
+  public getActiveInstrument(): MultiSampleInstrument {
     return this.activeInstrument;
   }
 

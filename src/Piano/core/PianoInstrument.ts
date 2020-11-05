@@ -7,6 +7,7 @@ export default class PianoInstrument implements MultiSampleInstrument {
   public play(noteIndex: number) {
     const sound = this.soundPack.getSample(noteIndex);
     if (sound) {
+      sound.stop();
       sound.play();
     }
   }

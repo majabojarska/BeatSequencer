@@ -6,7 +6,6 @@ import Sequencer from './Sequencer/Sequencer';
 import Home from './Home';
 import SequenceManagerFactory from './Sequencer/core/SequenceManagerFactory';
 import Piano from './Piano/Piano';
-import PianoManagerFactory from './Piano/core/PianoManagerFactory';
 const Stack = createStackNavigator();
 
 export type RootStackParamList = {
@@ -21,14 +20,8 @@ const App = () => {
     return sm;
   });
   (Sequencer as any).SequenceManager = sequenceManager;
-
-  const [pianoManager] = useState(() => {
-    const pm = PianoManagerFactory.getPianoManager();
-    return pm;
-  });
-  (Piano as any).PianoManager = pianoManager;
-
   (Home as any).SequenceManager = sequenceManager;
+  (Piano as any).SequenceManager = sequenceManager;
 
   useEffect(
     () => () => {

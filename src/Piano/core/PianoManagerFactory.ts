@@ -7,17 +7,15 @@ export default class PianoManagerFactory {
     return new PianoManager();
   }
 
-  public static getPianoManager(): PianoManager {
-    const pianoManager = this.getBase();
+  public static async setPiano(
+    pianoManager: PianoManager,
+  ): Promise<PianoManager> {
+    const pianoSoundPack = new SoundPack('piano', 1, 64);
+    await pianoSoundPack.init();
+    pianoManager.addInstrument('Piano', new PianoInstrument(pianoSoundPack));
+    pianoManager.setActiveInstrument('Piano');
 
-    pianoManager.addInstrument(
-      'Piano',
-      new PianoInstrument(new SoundPack('piano', 1, 88)),
-    );
-
-    pianoManager.setActiveInstrument(
-      pianoManager.getAvailableInstrumentNames()[0],
-    );
+    // Todo: add more instruments
 
     return pianoManager;
   }
