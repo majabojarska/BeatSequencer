@@ -14,7 +14,7 @@ export default class SoundPack {
       noteIndex <= sampleIndexStop;
       noteIndex++
     ) {
-      const fileName = namespace + '_' + noteIndex.toString().padStart(3, '0');
+      const fileName = namespace + '-' + noteIndex.toString().padStart(3, '0');
 
       const newSound = new Sound(fileName, Sound.MAIN_BUNDLE, (error) => {
         newSound.setVolume(0.9);
