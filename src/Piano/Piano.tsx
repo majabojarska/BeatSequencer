@@ -37,7 +37,7 @@ const Piano = ({navigation, route}: NavigationProps) => {
 
   useEffect(() => {
     async function init() {
-      await PianoManagerFactory.setPiano(pianoManager);
+      await PianoManagerFactory.getPianoManager(pianoManager);
       setInstrument(pianoManager.getActiveInstrument());
     }
     init();

@@ -36,8 +36,6 @@ export default class SoundPack {
             }
           }),
         );
-        this.sampleMap.get(noteIndex)?.setVolume(0.9);
-        // Loaded single sample
       });
     }
   }
