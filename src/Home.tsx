@@ -17,38 +17,47 @@ const Home = ({navigation}: NavigationProps) => {
   const sequenceManager: SequenceManager = (Home as any).SequenceManager;
   const [dim, setDim] = useState(Dimensions.get('window'));
   const [direction, setDirection] = useState<'column' | 'row'>('row');
-  Dimensions.addEventListener('change', () => {
-    setDim(Dimensions.get('window'));
-  });
+  useEffect(() => {
+    function handler() {
+      setDim(Dimensions.get('window'));
+    }
+    Dimensions.addEventListener('change', handler);
+    return () => {
+      Dimensions.removeEventListener('change', handler);
+    };
+  }, []);
   useEffect(() => {
     setDirection(dim.height > dim.width ? 'column' : 'row');
   }, [dim]);
   const {colors} = useTheme();
 
   return (
-    <View style={{...styles.view, flexDirection: direction}}>
+    <View style={styles.main}>
       <Progress sequenceManager={sequenceManager} />
-      <TouchableRipple
-        style={{...styles.btn, backgroundColor: colors.accent}}
-        onPress={() => navigation.push('Sequencer', {})}>
-        <Image
-          style={styles.img}
-          source={require('./assets/icons/006-drums.png')}
-        />
-      </TouchableRipple>
-      <TouchableRipple
-        style={{...styles.btn, backgroundColor: colors.primary}}
-        onPress={() => navigation.push('Piano', {})}>
-        <Image
-          style={styles.img}
-          source={require('./assets/icons/007-synthesizer.png')}
-        />
-      </TouchableRipple>
+      <View style={{...styles.view, flexDirection: direction}}>
+        <TouchableRipple
+          style={{...styles.btn, backgroundColor: colors.accent}}
+          onPress={() => navigation.push('Sequencer', {})}>
+          <Image
+            style={styles.img}
+            source={require('./assets/icons/006-drums.png')}
+          />
+        </TouchableRipple>
+        <TouchableRipple
+          style={{...styles.btn, backgroundColor: colors.primary}}
+          onPress={() => navigation.push('Piano', {})}>
+          <Image
+            style={styles.img}
+            source={require('./assets/icons/007-synthesizer.png')}
+          />
+        </TouchableRipple>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  main: {flex: 1},
   view: {
     justifyContent: 'space-evenly',
     alignItems: 'stretch',

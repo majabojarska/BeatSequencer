@@ -1,8 +1,6 @@
 import React from 'react';
-import {View, StyleSheet, Button, Text} from 'react-native';
-import {TouchableHighlight} from 'react-native-gesture-handler';
+import {StyleSheet, Pressable} from 'react-native';
 import MultiSampleInstrument from './core/MultiSampleInstrument';
-import {TouchableRipple} from 'react-native-paper';
 
 export enum KeyType {
   BLACK,
@@ -13,49 +11,59 @@ interface Props {
   instrument: MultiSampleInstrument;
   noteIndex: number;
   keyType: KeyType;
+  shift: number;
 }
 const PianoKey: React.FC<Props> = (props: Props) => {
-  function onPress() {
-    console.log(`OnPress ${props.noteIndex}`);
+  function onPressIn() {
+    console.log(`OnPressIn ${props.noteIndex}`);
     props.instrument.play(props.noteIndex);
+    return false;
   }
-
+  function onPressOut() {
+    console.log(`OnPressOut ${props.noteIndex}`);
+    if (props.instrument.stopOnRelease) {
+      props.instrument.stop(props.noteIndex);
+    }
+    return false;
+  }
   function getKeyStyle(keyType: KeyType) {
-    if (keyType == KeyType.WHITE) {
+    if (keyType === KeyType.WHITE) {
       return styles.whitePianoKey;
     }
-    return styles.blackPianoKey;
+    return {
+      ...styles.blackPianoKey,
+      zIndex: 1,
+      left: props.shift * 4,
+    };
   }
 
   return (
-    <View
-      style={[
-        styles.pianoKey,
-        getKeyStyle(props.keyType),
-        {zIndex: props.keyType == KeyType.BLACK ? 1 : 0},
-      ]}>
-      <TouchableRipple
-        rippleColor={
-          props.keyType == KeyType.BLACK
+    <Pressable
+      style={[styles.pianoKey, getKeyStyle(props.keyType)]}
+      onPress={() => {
+        console.log('xd');
+      }}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
+      android_disableSound={true}
+      android_ripple={{
+        color:
+          props.keyType === KeyType.BLACK
             ? 'rgba(255, 255, 255, .32)'
-            : undefined
-        }
-        onPress={onPress}
-        style={{flex: 1}}
-        touchSoundDisabled={true}>
-        <View></View>
-      </TouchableRipple>
-    </View>
+            : 'rgba(0, 0, 0, .32)',
+      }}
+    />
   );
 };
 
 export default PianoKey;
 
-const keyWidthScale = 2.0;
+const keyWidthScale = 1.0;
 const styles = StyleSheet.create({
   pianoKey: {
     alignItems: 'stretch',
   },
+  ripple: {flex: 1},
   whitePianoKey: {
     backgroundColor: 'white',
     minWidth: 48 * keyWidthScale,

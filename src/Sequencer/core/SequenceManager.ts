@@ -17,7 +17,7 @@ export default class SequenceManager {
   }
 
   constructor() {
-    Sound.setCategory('Playback');
+    Sound.setCategory('Playback', true);
   }
 
   public get currentBeat() {

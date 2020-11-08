@@ -1,14 +1,11 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import MultiSampleInstrument from './core/MultiSampleInstrument';
-import PianoInstrument from './core/PianoInstrument';
 import PianoKey, {KeyType} from './PianoKey';
 
-const whiteKeyNumsInOctave: Array<number> = [0, 2, 4, 5, 7, 9, 11];
 const blackKeyNumsInOctave: Array<number> = [1, 3, 6, 8, 10];
+const blackKeyShiftInOctave: Array<number> = [-1, 1, -1, 0, 1];
 const keyCountPerOctave = 12;
-
-const keyInOctaveToKeyType: Map<number, any> = new Map();
 
 // const blackKeyWidth = 30;
 interface Props {
@@ -18,27 +15,28 @@ const PianoInstrumentComponent = ({instrument}: Props) => {
   // State określajacy skalowanie szerokosci
 
   return (
-    <View
-      style={{
-        ...styles.pianoView,
-      }}>
-      <View
-        style={{
-          ...styles.pianoRowView,
-        }}>
+    <View style={styles.pianoView}>
+      <View style={styles.pianoRowView}>
         {Array(88)
           .fill(0)
           .map((_b: boolean, noteIndex: number) => {
+            noteIndex += 9;
             let keyType = KeyType.WHITE;
-            if (blackKeyNumsInOctave.includes(noteIndex % keyCountPerOctave)) {
+            let shift = 0;
+            const blackIndex = blackKeyNumsInOctave.findIndex(
+              (v) => v === noteIndex % keyCountPerOctave,
+            );
+            if (blackIndex >= 0) {
               keyType = KeyType.BLACK;
+              shift = blackKeyShiftInOctave[blackIndex];
             }
             return (
               <PianoKey
-                key={noteIndex + 1}
+                key={noteIndex - 8}
                 instrument={instrument}
-                noteIndex={noteIndex + 1}
+                noteIndex={noteIndex - 8}
                 keyType={keyType}
+                shift={shift}
               />
             );
           })}
@@ -51,7 +49,7 @@ const styles = StyleSheet.create({
   pianoView: {
     justifyContent: 'center',
     flex: 1,
-    margin: 4,
+    margin: 16,
   },
   pianoRowView: {
     flexDirection: 'row',

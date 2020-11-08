@@ -1,12 +1,11 @@
 import MultiSampleInstrument from './MultiSampleInstrument';
 import NullPianoInstrument from './NullPianoInstrument';
-import PianoInstrument from './PianoInstrument';
 
 export default class PianoManager {
   private activeInstrument: MultiSampleInstrument = new NullPianoInstrument();
-  private availableInstruments: Map<string, PianoInstrument> = new Map();
+  private availableInstruments: Map<string, MultiSampleInstrument> = new Map();
 
-  public addInstrument(name: string, instrument: PianoInstrument) {
+  public addInstrument(name: string, instrument: MultiSampleInstrument) {
     this.availableInstruments.set(name, instrument);
     return this;
   }
@@ -14,6 +13,8 @@ export default class PianoManager {
   public setActiveInstrument(name: string) {
     const newActiveInstrument = this.availableInstruments.get(name);
     if (newActiveInstrument) {
+      newActiveInstrument.soundPack?.init();
+      this.activeInstrument.soundPack?.release();
       this.activeInstrument = newActiveInstrument;
     }
     return this;
@@ -38,5 +39,11 @@ export default class PianoManager {
     if (this.activeInstrument) {
       this.activeInstrument.stop(noteIndex);
     }
+  }
+
+  public destroy() {
+    this.availableInstruments.forEach((instrument) => {
+      instrument.soundPack?.release();
+    });
   }
 }

@@ -1,6 +1,8 @@
 import MultiSampleInstrument from './MultiSampleInstrument';
 
 export default class NullPianoInstrument implements MultiSampleInstrument {
-  public play(noteIndex: number) {}
-  public stop(noteIndex: number) {}
+  stopOnRelease = false;
+  soundPack = null;
+  public play(_noteIndex: number) {}
+  public stop(_noteIndex: number) {}
 }
