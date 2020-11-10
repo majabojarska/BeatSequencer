@@ -6,7 +6,8 @@ export enum KeyType {
   BLACK,
   WHITE,
 }
-// Only full tones (white keys) are labeled for clarity
+// Only white key are labeled for clarity, as they're wider
+// Black keys have empty strings as fallback mechanism
 const noteNames = ['C', '', 'D', '', 'E', 'F', '', 'G', '', 'A', '', 'B'];
 interface Props {
   instrument: MultiSampleInstrument;
