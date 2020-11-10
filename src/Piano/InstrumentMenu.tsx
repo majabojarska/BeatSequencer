@@ -19,6 +19,11 @@ const InstrumentMenu = (props: Props) => {
     setInstrumentMenuVisible(false);
   };
 
+  function onInstrumentSelect(name: string) {
+    closeMenu();
+    props.onInstrumentNameChange(name);
+  }
+
   return (
     <Menu
       visible={menuVisible}
@@ -30,7 +35,7 @@ const InstrumentMenu = (props: Props) => {
           title={name}
           key={i}
           onPress={() => {
-            props.onInstrumentNameChange(name);
+            onInstrumentSelect(name);
           }}
         />
       ))}
