@@ -13,8 +13,8 @@ export default class PianoManager {
   public setActiveInstrument(name: string) {
     const newActiveInstrument = this.availableInstruments.get(name);
     if (newActiveInstrument) {
-      newActiveInstrument.soundPack?.init();
       this.activeInstrument.soundPack?.release();
+      newActiveInstrument.soundPack?.init();
       this.activeInstrument = newActiveInstrument;
     }
     return this;

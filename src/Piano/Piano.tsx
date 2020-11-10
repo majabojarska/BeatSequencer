@@ -52,19 +52,13 @@ const Piano = ({navigation, route}: NavigationProps) => {
     };
   }, [pianoManager, sequenceManager]);
 
+  const onKeyWidthScaleChange = (scale: number) => {
+    setKeyWidthScale(scale);
+  };
 
-  const onKeyWidthScaleChange = useCallback(
-    (scale: number) => {
-      setKeyWidthScale(scale);
-    },
-    [keyWidthScale],
-  );
-
-  const onInstrumentNameChange = useCallback(
-    (name: string)=>{
-      pianoManager.setActiveInstrument(name);
-    },[instrument]
-  )
+  const onInstrumentNameChange = (name: string) => {
+    pianoManager.setActiveInstrument(name);
+  };
 
   return (
     <View style={styles.containerView}>
@@ -78,7 +72,7 @@ const Piano = ({navigation, route}: NavigationProps) => {
         onKeyWidthScaleChange={(scale) => {
           onKeyWidthScaleChange(scale);
         }}
-        onUpdate={() => {}} // Todo: Implement onUpdate method
+        onUpdate={() => {}}
       />
       <Progress sequenceManager={sequenceManager} />
       <ScrollView horizontal style={styles.horizontalContainer}>

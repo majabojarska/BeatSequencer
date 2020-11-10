@@ -55,6 +55,9 @@ export default class SoundPack {
   }
 
   public release() {
+    console.log('====================================');
+    console.log("Releasing soundPack: " + this.namespace);
+    console.log('====================================');
     this.sampleMap.forEach((sound) => {
       sound.release();
     });

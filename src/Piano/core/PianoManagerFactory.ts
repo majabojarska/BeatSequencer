@@ -35,7 +35,7 @@ export default class PianoManagerFactory {
       new PianoInstrument(squareSoundPack),
     );
 
-    pianoManager.setActiveInstrument('Piano');
+    pianoManager.setActiveInstrument('Saw Wave');
     return pianoManager;
   }
 }
