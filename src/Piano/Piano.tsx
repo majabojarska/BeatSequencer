@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../App';
@@ -12,13 +12,14 @@ import SequenceManager from '../Sequencer/core/SequenceManager';
 import Sequencer from '../Sequencer/Sequencer';
 import Progress from '../Sequencer/Progress';
 import PianoManagerFactory from './core/PianoManagerFactory';
+import HeaderControls from './HeaderControls';
 
 type PianoScreenRouteProp = RouteProp<RootStackParamList, 'Piano'>;
 type PianoScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'Piano'
 >;
-type NavigationProps = {
+export type NavigationProps = {
   route: PianoScreenRouteProp;
   navigation: PianoScreenNavigationProp;
 };
@@ -31,6 +32,10 @@ const Piano = ({navigation, route}: NavigationProps) => {
   const [instrument, setInstrument] = useState(
     pianoManager.getActiveInstrument(),
   );
+  const [keyWidthScale, setKeyWidthScale] = useState(2);
+  const [instrumentNames, setInstrumentNames] = useState(
+    pianoManager.getAvailableInstrumentNames(),
+  );
 
   useEffect(() => {
     async function init() {
@@ -39,6 +44,7 @@ const Piano = ({navigation, route}: NavigationProps) => {
         sequenceManager.instruments.length,
       );
       setInstrument(pianoManager.getActiveInstrument());
+      setInstrumentNames(pianoManager.getAvailableInstrumentNames());
     }
     init();
     return () => {
@@ -46,11 +52,40 @@ const Piano = ({navigation, route}: NavigationProps) => {
     };
   }, [pianoManager, sequenceManager]);
 
+
+  const onKeyWidthScaleChange = useCallback(
+    (scale: number) => {
+      setKeyWidthScale(scale);
+    },
+    [keyWidthScale],
+  );
+
+  const onInstrumentNameChange = useCallback(
+    (name: string)=>{
+      pianoManager.setActiveInstrument(name);
+    },[instrument]
+  )
+
   return (
     <View style={styles.containerView}>
+      <HeaderControls
+        navigation={navigation}
+        route={route}
+        pianoManager={pianoManager}
+        keyWidthScale={keyWidthScale}
+        instrumentNames={instrumentNames}
+        onInstrumentNameChange={onInstrumentNameChange}
+        onKeyWidthScaleChange={(scale) => {
+          onKeyWidthScaleChange(scale);
+        }}
+        onUpdate={() => {}} // Todo: Implement onUpdate method
+      />
       <Progress sequenceManager={sequenceManager} />
       <ScrollView horizontal style={styles.horizontalContainer}>
-        <PianoInstrumentComponent instrument={instrument} />
+        <PianoInstrumentComponent
+          instrument={instrument}
+          keyWidthScale={keyWidthScale}
+        />
       </ScrollView>
     </View>
   );

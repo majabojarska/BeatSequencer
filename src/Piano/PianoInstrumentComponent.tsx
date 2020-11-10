@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import MultiSampleInstrument from './core/MultiSampleInstrument';
 import PianoKey, {KeyType} from './PianoKey';
@@ -7,12 +7,11 @@ const blackKeyNumsInOctave: Array<number> = [1, 3, 6, 8, 10];
 const blackKeyShiftInOctave: Array<number> = [-1, 1, -1, 0, 1];
 const keyCountPerOctave = 12;
 
-// const blackKeyWidth = 30;
 interface Props {
   instrument: MultiSampleInstrument;
+  keyWidthScale: number;
 }
-const PianoInstrumentComponent = ({instrument}: Props) => {
-  // State określajacy skalowanie szerokosci
+const PianoInstrumentComponent = ({instrument, keyWidthScale}: Props) => {
 
   return (
     <View style={styles.pianoView}>
@@ -37,6 +36,7 @@ const PianoInstrumentComponent = ({instrument}: Props) => {
                 noteIndex={noteIndex - 8}
                 keyType={keyType}
                 shift={shift}
+                keyWidthScale={keyWidthScale}
               />
             );
           })}

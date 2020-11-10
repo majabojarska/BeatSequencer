@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {Dialog, IconButton, Portal, Button} from 'react-native-paper';
 import SequenceManager from './core/SequenceManager';
 import {NavigationProps} from './Sequencer';
-import Touchspin from './Touchspin';
+import Touchspin from '../Common/Touchspin';
 
 interface Props {
   sequenceManager: SequenceManager;
