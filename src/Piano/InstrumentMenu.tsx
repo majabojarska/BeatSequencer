@@ -1,50 +1,68 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet} from 'react-native';
-import {Button, Menu} from 'react-native-paper';
-import PianoManager from './core/PianoManager';
+import React, {useState} from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Menu, TextInput} from 'react-native-paper';
 
 interface Props {
-  instrumentNames: Array<string>;
-  onInstrumentNameChange: (name: string) => void;
+  items: Array<string>;
+  value: string;
+  onUpdate: (name: string) => void;
 }
 
 const InstrumentMenu = (props: Props) => {
-  const [menuVisible, setInstrumentMenuVisible] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   const openMenu = () => {
-    setInstrumentMenuVisible(true);
-  };
+    console.log('xd');
 
+    setMenuVisible(true);
+  };
   const closeMenu = () => {
-    setInstrumentMenuVisible(false);
+    setMenuVisible(false);
   };
 
-  function onInstrumentSelect(name: string) {
+  function onSelect(name: string) {
     closeMenu();
-    props.onInstrumentNameChange(name);
+    props.onUpdate(name);
   }
 
   return (
-    <Menu
-      visible={menuVisible}
-      anchor={<Button onPress={openMenu}>Select instrument</Button>}
-      onDismiss={closeMenu}
-      style={styles.menu}>
-      {props.instrumentNames.map((name, i) => (
-        <Menu.Item
-          title={name}
-          key={i}
-          onPress={() => {
-            onInstrumentSelect(name);
-          }}
-        />
-      ))}
-    </Menu>
+    <View style={styles.menu}>
+      <Menu
+        visible={menuVisible}
+        anchor={
+          <TouchableOpacity onPress={openMenu}>
+            <TextInput
+              label="Instrument"
+              mode="outlined"
+              value={props.value}
+              onChangeText={undefined}
+              editable={false}
+              dense={true}
+              style={styles.input}
+            />
+          </TouchableOpacity>
+        }
+        onDismiss={closeMenu}>
+        {props.items.map((name, i) => (
+          <Menu.Item
+            title={name}
+            key={i}
+            onPress={() => {
+              onSelect(name);
+            }}
+          />
+        ))}
+      </Menu>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  menu: {minWidth: 250},
+  menu: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+  },
+  input: {marginBottom: 4, width: '100%'},
 });
 
 export default InstrumentMenu;

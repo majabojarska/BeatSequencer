@@ -12,27 +12,26 @@ export default class PianoManagerFactory {
     reservedSounds = 0,
   ): Promise<PianoManager> {
     const pianoSoundPack = new SoundPack('piano', 1, 64);
-    pianoManager.addInstrument('Piano', new PianoInstrument(pianoSoundPack));
+    pianoManager.addInstrument(new PianoInstrument('Piano', pianoSoundPack));
 
     const sawSoundPack = new SoundPack('saw', 1, 88, reservedSounds);
     pianoManager.addInstrument(
-      'Saw Wave',
-      new PianoInstrument(sawSoundPack, true),
+      new PianoInstrument('Saw Wave', sawSoundPack, true),
     );
 
-    const sineSoundPack = new SoundPack('sine', 1, 88);
-    pianoManager.addInstrument('Sine Wave', new PianoInstrument(sineSoundPack));
-
-    const triangleSoundPack = new SoundPack('triangle', 1, 88);
+    const sineSoundPack = new SoundPack('sine', 1, 88, reservedSounds);
     pianoManager.addInstrument(
-      'Triangle Wave',
-      new PianoInstrument(triangleSoundPack),
+      new PianoInstrument('Sine Wave', sineSoundPack, true),
     );
 
-    const squareSoundPack = new SoundPack('square', 1, 88);
+    const triangleSoundPack = new SoundPack('triangle', 1, 88, reservedSounds);
     pianoManager.addInstrument(
-      'Square Wave',
-      new PianoInstrument(squareSoundPack),
+      new PianoInstrument('Triangle Wave', triangleSoundPack, true),
+    );
+
+    const squareSoundPack = new SoundPack('square', 1, 88, reservedSounds);
+    pianoManager.addInstrument(
+      new PianoInstrument('Square Wave', squareSoundPack, true),
     );
 
     pianoManager.setActiveInstrument('Saw Wave');

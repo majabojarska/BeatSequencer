@@ -5,8 +5,8 @@ export default class PianoManager {
   private activeInstrument: MultiSampleInstrument = new NullPianoInstrument();
   private availableInstruments: Map<string, MultiSampleInstrument> = new Map();
 
-  public addInstrument(name: string, instrument: MultiSampleInstrument) {
-    this.availableInstruments.set(name, instrument);
+  public addInstrument(instrument: MultiSampleInstrument) {
+    this.availableInstruments.set(instrument.name, instrument);
     return this;
   }
 

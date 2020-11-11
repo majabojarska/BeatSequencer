@@ -1,8 +1,10 @@
 import SoundPack from './SoundPack';
 
 export default interface MultiSampleInstrument {
-  stopOnRelease: boolean;
+  readonly name: string;
   soundPack: SoundPack | null;
-  play: (noteIndex: number) => void;
-  stop: (noteIndex: number) => void;
+  stopOnRelease: boolean;
+
+  play(noteIndex: number): void;
+  stop(noteIndex: number): void;
 }

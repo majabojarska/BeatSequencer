@@ -3,6 +3,7 @@ import SoundPack from './SoundPack';
 
 export default class PianoInstrument implements MultiSampleInstrument {
   constructor(
+    public readonly name: string,
     public readonly soundPack: SoundPack,
     public readonly stopOnRelease = false,
   ) {}
@@ -28,7 +29,6 @@ export default class PianoInstrument implements MultiSampleInstrument {
 
         sound.play(() => {
           console.log('Playback done for noteIndex: ' + noteIndex);
-          //sound.stop();
         });
       });
     }

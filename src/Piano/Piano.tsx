@@ -1,12 +1,8 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../App';
-// import Tone from 'react-native-tone2';
 import {ScrollView, StyleSheet, View} from 'react-native';
-// import BottomControls from './BottomControls';
-// import SingleSampleInstrumentComponent from './SingleSampleInstrumentComponent';
-// import Progress from './Progress';
 import PianoInstrumentComponent from './PianoInstrumentComponent';
 import SequenceManager from '../Sequencer/core/SequenceManager';
 import Sequencer from '../Sequencer/Sequencer';
@@ -26,12 +22,11 @@ export type NavigationProps = {
 const Piano = ({navigation, route}: NavigationProps) => {
   const sequenceManager: SequenceManager = (Sequencer as any).SequenceManager;
 
-  const [pianoManager, setPianoManager] = useState(
-    PianoManagerFactory.getBase(),
-  );
+  const [pianoManager] = useState(PianoManagerFactory.getBase());
   const [instrument, setInstrument] = useState(
     pianoManager.getActiveInstrument(),
   );
+  const [instrumentName, setInstrumentName] = useState('None');
   const [keyWidthScale, setKeyWidthScale] = useState(2);
   const [instrumentNames, setInstrumentNames] = useState(
     pianoManager.getAvailableInstrumentNames(),
@@ -43,7 +38,9 @@ const Piano = ({navigation, route}: NavigationProps) => {
         pianoManager,
         sequenceManager.instruments.length,
       );
-      setInstrument(pianoManager.getActiveInstrument());
+      const active = pianoManager.getActiveInstrument();
+      setInstrument(active);
+      setInstrumentName(active.name);
       setInstrumentNames(pianoManager.getAvailableInstrumentNames());
     }
     init();
@@ -52,12 +49,12 @@ const Piano = ({navigation, route}: NavigationProps) => {
     };
   }, [pianoManager, sequenceManager]);
 
-  const onKeyWidthScaleChange = (scale: number) => {
-    setKeyWidthScale(scale);
-  };
-
-  const onInstrumentNameChange = (name: string) => {
+  const onControlsUpdate = (name: string, keyScale: number) => {
     pianoManager.setActiveInstrument(name);
+    const active = pianoManager.getActiveInstrument();
+    setInstrument(active);
+    setInstrumentName(active.name);
+    setKeyWidthScale(keyScale);
   };
 
   return (
@@ -65,14 +62,10 @@ const Piano = ({navigation, route}: NavigationProps) => {
       <HeaderControls
         navigation={navigation}
         route={route}
-        pianoManager={pianoManager}
-        keyWidthScale={keyWidthScale}
+        keyScale={keyWidthScale}
+        instrumentName={instrumentName}
         instrumentNames={instrumentNames}
-        onInstrumentNameChange={onInstrumentNameChange}
-        onKeyWidthScaleChange={(scale) => {
-          onKeyWidthScaleChange(scale);
-        }}
-        onUpdate={() => {}}
+        onUpdate={(...args) => onControlsUpdate(...args)}
       />
       <Progress sequenceManager={sequenceManager} />
       <ScrollView horizontal style={styles.horizontalContainer}>

@@ -1,32 +1,33 @@
 import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Dialog, IconButton, Portal, Button, Menu} from 'react-native-paper';
+import {Dialog, IconButton, Portal, Button} from 'react-native-paper';
 import {NavigationProps} from './Piano';
 import Touchspin from '../Common/Touchspin';
-import PianoManager from './core/PianoManager';
-import {findLastIndex} from 'lodash';
 import InstrumentMenu from './InstrumentMenu';
 
 interface Props {
-  pianoManager: PianoManager;
-  keyWidthScale: number;
+  keyScale: number;
+  instrumentName: string;
   instrumentNames: Array<string>;
-  onInstrumentNameChange: (name: string)=>void;
-  onKeyWidthScaleChange: (scale: number) => void;
-  onUpdate: () => void;
+  onUpdate: (instrumentName: string, keyScale: number) => void;
 }
 
 const HeaderControls = ({
   navigation,
-  pianoManager,
-  keyWidthScale,
+  keyScale,
   instrumentNames,
-  onInstrumentNameChange,
-  onKeyWidthScaleChange,
+  instrumentName,
   onUpdate,
 }: Props & NavigationProps) => {
   const [visible, setVisible] = useState(false);
-  const [_keyWidthScale, setKeyWidthScale] = useState(keyWidthScale);
+  const [innerKeyScale, setInnerKeyScale] = useState(keyScale);
+  const [innerInstrumentName, setInnerInstrumentName] = useState(
+    instrumentName,
+  );
+
+  useEffect(() => {
+    setInnerInstrumentName(instrumentName);
+  }, [instrumentName]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -48,15 +49,14 @@ const HeaderControls = ({
   }, [navigation, visible]);
 
   const submit = useCallback(() => {
-    onKeyWidthScaleChange(_keyWidthScale);
     setVisible(false);
-    onUpdate();
-  }, [_keyWidthScale, pianoManager, onUpdate]);
+    onUpdate(innerInstrumentName, innerKeyScale);
+  }, [innerInstrumentName, innerKeyScale, onUpdate]);
 
   const cancel = useCallback(() => {
     setVisible(false);
-    setKeyWidthScale(keyWidthScale);
-  }, [_keyWidthScale]);
+    setInnerKeyScale(innerKeyScale);
+  }, [innerKeyScale]);
 
   return (
     <Portal>
@@ -65,21 +65,19 @@ const HeaderControls = ({
         visible={visible}
         onDismiss={() => setVisible(false)}>
         <Dialog.Title>Piano settings</Dialog.Title>
-        <Dialog.Content style={styles.dialogContent}>
+        <Dialog.Content>
+          <InstrumentMenu
+            items={instrumentNames}
+            value={innerInstrumentName}
+            onUpdate={(v) => setInnerInstrumentName(v)}
+          />
           <Touchspin
             label="Key width"
             max={3}
             min={1}
             step={0.25}
-            value={_keyWidthScale} // Bind to state
-            onUpdate={(v) => {
-              setKeyWidthScale(v);
-            }} // Bind to update func
-          />
-          <InstrumentMenu
-            // pianoManager={pianoManager}
-            onInstrumentNameChange={onInstrumentNameChange}
-            instrumentNames={instrumentNames}
+            value={innerKeyScale}
+            onUpdate={(v) => setInnerKeyScale(v)}
           />
         </Dialog.Content>
         <Dialog.Actions>
@@ -92,16 +90,12 @@ const HeaderControls = ({
 };
 
 const styles = StyleSheet.create({
-  view: {
-    flexDirection: 'row',
-  },
-  touchspin: {
-    flexDirection: 'row',
-  },
+  view: {},
+  touchspin: {},
   dialog: {
     minWidth: 300,
     alignSelf: 'center',
+    justifyContent: 'center',
   },
-  dialogContent: {},
 });
 export default HeaderControls;
