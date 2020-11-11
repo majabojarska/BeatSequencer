@@ -38,7 +38,7 @@ mkdir("tri");
 mkdir("sine");
 mkdir("square");
 
-fade_duration = 0.05;
+fade_duration = 0.01;
 fade_in = 0:1/(samplerate*fade_duration):1.0;
 fade_out = flip(fade_in);
 
