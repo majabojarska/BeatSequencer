@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Pressable, Text, View} from 'react-native';
+import {StyleSheet, Pressable, Text} from 'react-native';
 import MultiSampleInstrument from './core/MultiSampleInstrument';
 
 export enum KeyType {
@@ -18,12 +18,10 @@ interface Props {
 }
 const PianoKey: React.FC<Props> = (props: Props) => {
   function onPressIn() {
-    console.log(`OnPressIn ${props.noteIndex}`);
     props.instrument.play(props.noteIndex);
     return false;
   }
   function onPressOut() {
-    console.log(`OnPressOut ${props.noteIndex}`);
     if (props.instrument.stopOnRelease) {
       props.instrument.stop(props.noteIndex);
     }
@@ -47,14 +45,14 @@ const PianoKey: React.FC<Props> = (props: Props) => {
   }
 
   function getKeyCaption() {
-    const letterIndex = (props.noteIndex - 4 + 12) % 12
-    let letter = noteNames[letterIndex]
+    const letterIndex = (props.noteIndex - 4 + 12) % 12;
+    let letter = noteNames[letterIndex];
 
     if (letter) {
       const octNum = Math.ceil((props.noteIndex - 3) / 12).toString();
       return `${letter}${octNum}`;
     }
-    return ""
+    return '';
   }
 
   function getCaptionStyle() {
@@ -71,10 +69,8 @@ const PianoKey: React.FC<Props> = (props: Props) => {
         getKeyStyle(props.keyType),
         {minWidth: getKeyStyle(props.keyType).minWidth},
       ]}
-      onPress={() => {
-        console.log('xd');
-      }}
-      onPressIn={onPressIn}
+      onPress={undefined}
+      onTouchStart={onPressIn}
       onPressOut={onPressOut}
       android_disableSound={true}
       android_ripple={{

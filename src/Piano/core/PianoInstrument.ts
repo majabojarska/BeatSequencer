@@ -10,26 +10,10 @@ export default class PianoInstrument implements MultiSampleInstrument {
 
   public async play(noteIndex: number) {
     const sound = await this.soundPack.getSample(noteIndex);
-    console.log(
-      'Got sample for noteIndex: ' +
-        sound +
-        ' | duration: ' +
-        sound?.getDuration(),
-    );
-
     if (sound) {
       sound.setNumberOfLoops(this.stopOnRelease ? 999 : 0);
       sound.stop(() => {
-        console.log(
-          'Playing noteIndex: ' +
-            noteIndex +
-            ' | duration: ' +
-            sound.getDuration(),
-        );
-
-        sound.play(() => {
-          console.log('Playback done for noteIndex: ' + noteIndex);
-        });
+        sound.play();
       });
     }
   }

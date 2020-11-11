@@ -6,7 +6,6 @@ import {ScrollView, StyleSheet, View} from 'react-native';
 import PianoInstrumentComponent from './PianoInstrumentComponent';
 import SequenceManager from '../Sequencer/core/SequenceManager';
 import Sequencer from '../Sequencer/Sequencer';
-import Progress from '../Sequencer/Progress';
 import PianoManagerFactory from './core/PianoManagerFactory';
 import HeaderControls from './HeaderControls';
 
@@ -27,7 +26,7 @@ const Piano = ({navigation, route}: NavigationProps) => {
     pianoManager.getActiveInstrument(),
   );
   const [instrumentName, setInstrumentName] = useState('None');
-  const [keyWidthScale, setKeyWidthScale] = useState(2);
+  const [keyWidthScale, setKeyWidthScale] = useState(1.5);
   const [instrumentNames, setInstrumentNames] = useState(
     pianoManager.getAvailableInstrumentNames(),
   );
@@ -67,7 +66,6 @@ const Piano = ({navigation, route}: NavigationProps) => {
         instrumentNames={instrumentNames}
         onUpdate={(...args) => onControlsUpdate(...args)}
       />
-      <Progress sequenceManager={sequenceManager} />
       <ScrollView horizontal style={styles.horizontalContainer}>
         <PianoInstrumentComponent
           instrument={instrument}

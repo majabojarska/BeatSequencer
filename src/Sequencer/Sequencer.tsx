@@ -6,7 +6,6 @@ import {RootStackParamList} from '../App';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import BottomControls from './BottomControls';
 import SingleSampleInstrumentComponent from './SingleSampleInstrumentComponent';
-import Progress from './Progress';
 import HeaderControls from './HeaderControls';
 import SequenceManager from './core/SequenceManager';
 
@@ -58,9 +57,6 @@ const Sequencer = ({navigation, route}: NavigationProps) => {
         sequenceManager={sequenceManager}
         onUpdate={() => setInstruments([...sequenceManager.instruments])}
       />
-
-      <Progress sequenceManager={sequenceManager} />
-
       <ScrollView horizontal style={styles.horizontalContainer}>
         <ScrollView style={styles.verticalContainer}>
           <Subheading style={styles.subheader}>Drums</Subheading>

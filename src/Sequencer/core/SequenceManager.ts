@@ -81,7 +81,6 @@ export default class SequenceManager {
   private restartInterval() {
     this.clearInterval();
     const period = 60 / this._beatsPerBar / this.bpm;
-    console.log(period);
     this.playInterval = setInterval(this.tick.bind(this), period * 1000);
   }
 

@@ -1,7 +1,7 @@
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Image, StyleSheet, View} from 'react-native';
+import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
 import {TouchableRipple, useTheme} from 'react-native-paper';
 import {RootStackParamList} from './App';
 import SequenceManager from './Sequencer/core/SequenceManager';
@@ -14,7 +14,6 @@ export type NavigationProps = {
   navigation: HomeScreenNavigationProp;
 };
 const Home = ({navigation}: NavigationProps) => {
-  const sequenceManager: SequenceManager = (Home as any).SequenceManager;
   const [dim, setDim] = useState(Dimensions.get('window'));
   const [direction, setDirection] = useState<'column' | 'row'>('row');
   useEffect(() => {
@@ -33,7 +32,6 @@ const Home = ({navigation}: NavigationProps) => {
 
   return (
     <View style={styles.main}>
-      <Progress sequenceManager={sequenceManager} />
       <View style={{...styles.view, flexDirection: direction}}>
         <TouchableRipple
           style={{...styles.btn, backgroundColor: colors.accent}}

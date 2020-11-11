@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import SequenceManager from './core/SequenceManager';
 import {StyleSheet} from 'react-native';
 import {Button, useTheme} from 'react-native-paper';
@@ -32,7 +32,7 @@ const BeatButton = ({sequenceManager, instrument, k}: Props) => {
     instrument.setBeat(k, beat);
   }, [instrument, k, beat]);
 
-  function getButtonStyle() {
+  const getButtonStyle = useCallback(() => {
     const bpb = sequenceManager.beatsPerBar;
     return {
       backgroundColor: beat
@@ -44,7 +44,7 @@ const BeatButton = ({sequenceManager, instrument, k}: Props) => {
         : colors.background,
       marginLeft: k % bpb !== 0 ? 4 : 16,
     };
-  }
+  }, [beat, isActive]);
 
   return (
     <Button

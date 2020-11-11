@@ -12,8 +12,6 @@ const InstrumentMenu = (props: Props) => {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const openMenu = () => {
-    console.log('xd');
-
     setMenuVisible(true);
   };
   const closeMenu = () => {

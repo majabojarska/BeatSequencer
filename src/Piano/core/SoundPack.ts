@@ -40,11 +40,9 @@ export default class SoundPack {
             const msg = `Failed to load sound ${fileName}, ${JSON.stringify(
               error,
             )}`;
-            console.log(msg);
             ToastAndroid.show(msg, ToastAndroid.LONG);
             reject(error);
           } else {
-            console.log(`Loaded sound ${fileName}, ${sound.isLoaded()}`);
             this.sampleMap.set(noteIndex, sound);
             this.sampleUsage.set(noteIndex, 0);
             resolve(sound);
@@ -55,9 +53,6 @@ export default class SoundPack {
   }
 
   public release() {
-    console.log('====================================');
-    console.log("Releasing soundPack: " + this.namespace);
-    console.log('====================================');
     this.sampleMap.forEach((sound) => {
       sound.release();
     });

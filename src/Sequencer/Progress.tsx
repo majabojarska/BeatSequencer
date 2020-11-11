@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {RouteProp} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
 import {ProgressBar} from 'react-native-paper';
-import SequenceManagerFactory from './core/SequenceManagerFactory';
 import SequenceManager from './core/SequenceManager';
 
 interface Props {
