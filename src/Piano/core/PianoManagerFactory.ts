@@ -24,7 +24,7 @@ export default class PianoManagerFactory {
       new PianoInstrument('Sine Wave', sineSoundPack, true),
     );
 
-    const triangleSoundPack = new SoundPack('triangle', 1, 88, reservedSounds);
+    const triangleSoundPack = new SoundPack('tri', 1, 88, reservedSounds);
     pianoManager.addInstrument(
       new PianoInstrument('Triangle Wave', triangleSoundPack, true),
     );
