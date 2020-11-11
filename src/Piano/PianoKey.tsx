@@ -1,5 +1,13 @@
-import React from 'react';
-import {StyleSheet, Pressable, Text} from 'react-native';
+import React, {Touch} from 'react';
+import {
+  StyleSheet,
+  Text,
+  StyleProp,
+  ViewStyle,
+  View,
+  Touchable,
+} from 'react-native';
+import {TouchableHighlight} from 'react-native-gesture-handler';
 import MultiSampleInstrument from './core/MultiSampleInstrument';
 
 export enum KeyType {
@@ -27,20 +35,43 @@ const PianoKey: React.FC<Props> = (props: Props) => {
     }
     return false;
   }
-  function getKeyStyle(keyType: KeyType) {
+  function getKeyStyle(keyType: KeyType): StyleProp<ViewStyle> {
     if (keyType === KeyType.WHITE) {
       return {
-        ...styles.whitePianoKey,
-        minWidth: styles.whitePianoKey.minWidth * props.keyWidthScale,
+        height: 300,
+        zIndex: 0,
       };
     }
     return {
-      ...styles.blackPianoKey,
-      minWidth: styles.blackPianoKey.minWidth * props.keyWidthScale,
-      marginLeft: styles.blackPianoKey.marginLeft * props.keyWidthScale,
       marginRight: styles.blackPianoKey.marginRight * props.keyWidthScale,
+      marginLeft: styles.blackPianoKey.marginLeft * props.keyWidthScale,
+      height: 200,
       zIndex: 1,
       left: props.shift * 4,
+    };
+  }
+  function getInnerKeyStyle(keyType: KeyType) {
+    const common = {
+      borderWidth: 1,
+      borderRadius: 4,
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+    };
+    if (keyType === KeyType.WHITE) {
+      return {
+        ...common,
+        height: 300,
+        minWidth: 48 * props.keyWidthScale,
+        backgroundColor: 'white',
+        borderColor: '#ddd',
+      };
+    }
+    return {
+      ...common,
+      height: 200,
+      backgroundColor: 'black',
+      minWidth: 36 * props.keyWidthScale,
+      borderColor: 'white',
     };
   }
 
@@ -63,24 +94,21 @@ const PianoKey: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <Pressable
-      style={[
-        styles.pianoKey,
-        getKeyStyle(props.keyType),
-        {minWidth: getKeyStyle(props.keyType).minWidth},
-      ]}
-      onPress={undefined}
-      onTouchStart={onPressIn}
-      onPressOut={onPressOut}
-      android_disableSound={true}
-      android_ripple={{
-        color:
-          props.keyType === KeyType.BLACK
-            ? 'rgba(255, 255, 255, .32)'
-            : 'rgba(0, 0, 0, .32)',
-      }}>
-      <Text style={[getCaptionStyle()]}>{getKeyCaption()}</Text>
-    </Pressable>
+    <View style={getKeyStyle(props.keyType)}>
+      <TouchableHighlight
+        onPressIn={() => onPressIn()}
+        onPressOut={() => onPressOut()}
+        underlayColor={
+          props.keyType === KeyType.WHITE
+            ? 'rgba(0,0,0,0.32)'
+            : 'rgba(173,173,173,1)'
+        }
+        activeOpacity={1}
+        style={getInnerKeyStyle(props.keyType) as StyleProp<ViewStyle>}
+        onPress={() => {}}>
+        <Text style={getCaptionStyle()}>{getKeyCaption()}</Text>
+      </TouchableHighlight>
+    </View>
   );
 };
 
@@ -92,24 +120,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
-  ripple: {flex: 1},
-  whitePianoKey: {
-    backgroundColor: 'white',
-    minWidth: 48,
-    borderColor: '#DDD',
-    borderRadius: 4,
-    borderWidth: 1,
-    height: 300,
-  },
+  whitePianoKey: {},
   blackPianoKey: {
     marginLeft: -36 / 2,
     marginRight: -36 / 2,
-    backgroundColor: 'black',
-    borderColor: 'white',
-    borderWidth: 1,
-    borderRadius: 4,
-    minWidth: 36,
-    height: 200,
   },
   whitePianoKeyCaption: {
     fontSize: 16,

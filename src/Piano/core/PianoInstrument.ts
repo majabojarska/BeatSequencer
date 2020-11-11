@@ -12,9 +12,8 @@ export default class PianoInstrument implements MultiSampleInstrument {
     const sound = await this.soundPack.getSample(noteIndex);
     if (sound) {
       sound.setNumberOfLoops(this.stopOnRelease ? 999 : 0);
-      sound.stop(() => {
-        sound.play();
-      });
+      sound.stop();
+      sound.play();
     }
   }
 
